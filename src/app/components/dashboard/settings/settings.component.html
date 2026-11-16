@@ -1,0 +1,278 @@
+<div class="settings-wrapper fade-in text-start">
+  <!-- Header -->
+  <div class="mb-4">
+    <h2 class="fw-bold mb-1" style="color: var(--primary-color, #800000);">
+      <i class="fas fa-sliders-h me-2"></i> Application Settings &amp; Preferences
+    </h2>
+    <p class="text-muted text-sm mb-0">Manage your account security, JWT authentication session, theme styling, and AI defaults.</p>
+  </div>
+
+  <div class="settings-card">
+    <div class="row g-0">
+      <!-- Left Tabs Navigation -->
+      <div class="col-md-4 settings-nav">
+        <div class="nav flex-column nav-pills" role="tablist">
+          <button
+            class="nav-link text-start"
+            [class.active]="activeTab === 'security'"
+            (click)="setTab('security')"
+            type="button"
+          >
+            <i class="fas fa-shield-alt w-5 me-2"></i> Security &amp; Password
+          </button>
+          <button
+            class="nav-link text-start"
+            [class.active]="activeTab === 'theme'"
+            (click)="setTab('theme')"
+            type="button"
+          >
+            <i class="fas fa-palette w-5 me-2"></i> Appearance &amp; Themes
+          </button>
+          <button
+            class="nav-link text-start"
+            [class.active]="activeTab === 'preferences'"
+            (click)="setTab('preferences')"
+            type="button"
+          >
+            <i class="fas fa-cog w-5 me-2"></i> Model &amp; App Defaults
+          </button>
+          <button
+            class="nav-link text-start"
+            [class.active]="activeTab === 'info'"
+            (click)="setTab('info')"
+            type="button"
+          >
+            <i class="fas fa-info-circle w-5 me-2"></i> System &amp; JWT Info
+          </button>
+        </div>
+      </div>
+
+      <!-- Right Content Panes -->
+      <div class="col-md-8 p-4">
+        <!-- TAB 1: RESET PASSWORD -->
+        <div *ngIf="activeTab === 'security'">
+          <h5 class="fw-bold mb-3 text-dark"><i class="fas fa-key text-warning me-2"></i> Reset / Change Password</h5>
+          <p class="text-muted text-sm mb-4">Ensure your account is using a strong password. Changes take effect immediately across all JWT sessions.</p>
+
+          <div *ngIf="pwdSuccessMsg" class="alert alert-success" role="alert">
+            <i class="fas fa-check-circle me-1"></i> {{ pwdSuccessMsg }}
+          </div>
+          <div *ngIf="pwdErrorMsg" class="alert alert-danger" role="alert">
+            <i class="fas fa-exclamation-circle me-1"></i> {{ pwdErrorMsg }}
+          </div>
+
+          <form (ngSubmit)="onChangePassword()">
+            <div class="mb-3">
+              <label class="form-label text-sm fw-semibold">Current Password</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                <input
+                  type="password"
+                  name="current_password"
+                  [(ngModel)]="currentPassword"
+                  class="form-control"
+                  required
+                  placeholder="Enter current password"
+                />
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label text-sm fw-semibold">New Password</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-lock-open"></i></span>
+                <input
+                  type="password"
+                  name="new_password"
+                  [(ngModel)]="newPassword"
+                  class="form-control"
+                  required
+                  placeholder="Minimum 6 characters"
+                />
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label text-sm fw-semibold">Confirm New Password</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-check-circle"></i></span>
+                <input
+                  type="password"
+                  name="confirm_password"
+                  [(ngModel)]="confirmPassword"
+                  class="form-control"
+                  required
+                  placeholder="Re-type new password"
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              class="btn btn-danger px-4 py-2 fw-semibold"
+              [disabled]="isPwdLoading"
+              style="background-color: var(--primary-color, #800000); border-color: var(--primary-color, #800000);"
+            >
+              <span *ngIf="!isPwdLoading"><i class="fas fa-save me-1"></i> Update Password</span>
+              <span *ngIf="isPwdLoading"><i class="fas fa-spinner fa-spin me-1"></i> Updating...</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- TAB 2: APPEARANCE & THEMES -->
+        <div *ngIf="activeTab === 'theme'">
+          <h5 class="fw-bold mb-2 text-dark"><i class="fas fa-swatchbook text-primary me-2"></i> Application Theme</h5>
+          <p class="text-muted text-sm mb-4">Choose your preferred workspace aesthetic. The selection applies instantly and persists across visits.</p>
+
+          <div class="row g-3 mb-4">
+            <!-- Theme 1: Academic Crimson -->
+            <div class="col-md-6">
+              <div
+                class="theme-card"
+                [class.active]="currentTheme === 'crimson'"
+                (click)="setTheme('crimson')"
+              >
+                <div class="theme-preview">
+                  <div style="flex: 2; background: #800000; border-radius: 6px 0 0 6px;"></div>
+                  <div style="flex: 4; background: #fdfdfd; border: 1px solid #e2e8f0; border-radius: 0 6px 6px 0;"></div>
+                </div>
+                <strong class="d-block text-sm">Academic Crimson</strong>
+                <small class="text-muted">Classic university maroon &amp; gold accents</small>
+              </div>
+            </div>
+
+            <!-- Theme 2: Modern Slate & Indigo -->
+            <div class="col-md-6">
+              <div
+                class="theme-card"
+                [class.active]="currentTheme === 'indigo'"
+                (click)="setTheme('indigo')"
+              >
+                <div class="theme-preview">
+                  <div style="flex: 2; background: #0f172a; border-radius: 6px 0 0 6px;"></div>
+                  <div style="flex: 4; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0 6px 6px 0;"></div>
+                </div>
+                <strong class="d-block text-sm">Modern Indigo SaaS</strong>
+                <small class="text-muted">High-contrast executive slate &amp; indigo</small>
+              </div>
+            </div>
+
+            <!-- Theme 3: Ocean Navy -->
+            <div class="col-md-6">
+              <div
+                class="theme-card"
+                [class.active]="currentTheme === 'ocean'"
+                (click)="setTheme('ocean')"
+              >
+                <div class="theme-preview">
+                  <div style="flex: 2; background: #0c4a6e; border-radius: 6px 0 0 6px;"></div>
+                  <div style="flex: 4; background: #f0f9ff; border: 1px solid #e2e8f0; border-radius: 0 6px 6px 0;"></div>
+                </div>
+                <strong class="d-block text-sm">Deep Oceanic Navy</strong>
+                <small class="text-muted">Deep marine blue &amp; cyan highlights</small>
+              </div>
+            </div>
+
+            <!-- Theme 4: Minimalist Light -->
+            <div class="col-md-6">
+              <div
+                class="theme-card"
+                [class.active]="currentTheme === 'minimal'"
+                (click)="setTheme('minimal')"
+              >
+                <div class="theme-preview">
+                  <div style="flex: 2; background: #334155; border-radius: 6px 0 0 6px;"></div>
+                  <div style="flex: 4; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 0 6px 6px 0;"></div>
+                </div>
+                <strong class="d-block text-sm">Clean Minimalist Light</strong>
+                <small class="text-muted">Ultra-crisp layout with emerald badges</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-3 bg-light rounded-3 text-sm text-muted">
+            <i class="fas fa-info-circle text-primary me-1"></i> Themes update your dashboard top bar, sidebar active indicators, buttons, and card borders.
+          </div>
+        </div>
+
+        <!-- TAB 3: APP PREFERENCES -->
+        <div *ngIf="activeTab === 'preferences'">
+          <h5 class="fw-bold mb-2 text-dark"><i class="fas fa-sliders-h text-success me-2"></i> AI Model &amp; App Preferences</h5>
+          <p class="text-muted text-sm mb-4">Customize the default parameters for automated question formulation and answer grading.</p>
+
+          <div *ngIf="prefSavedAlert" class="alert alert-success py-2">
+            <i class="fas fa-check-circle me-1"></i> Preferences saved successfully!
+          </div>
+
+          <form (ngSubmit)="savePreferences()">
+            <div class="mb-3">
+              <label class="form-label text-sm fw-semibold">Default Neural Architecture</label>
+              <select class="form-select" [(ngModel)]="prefModel" name="pref_model">
+                <option value="LSTM">LSTM (Long Short-Term Memory) - Recommended</option>
+                <option value="RNN">RNN (Recurrent Neural Network)</option>
+                <option value="BiLSTM">BiLSTM (Bidirectional Sequential Model)</option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label text-sm fw-semibold">Default Question Count</label>
+              <select class="form-select" [(ngModel)]="prefNoq" name="pref_noq">
+                <option [value]="3">3 Questions (Quick Quiz)</option>
+                <option [value]="5">5 Questions (Standard Assessment)</option>
+                <option [value]="10">10 Questions (Comprehensive Exam)</option>
+                <option [value]="15">15 Questions (Full Test)</option>
+              </select>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label text-sm fw-semibold">Answer Evaluation Sensitivity</label>
+              <select class="form-select" [(ngModel)]="prefStrictness" name="pref_strictness">
+                <option value="lenient">Lenient (Emphasizes general conceptual grasp)</option>
+                <option value="balanced">Balanced (Standard TF-IDF + Keyword Coverage)</option>
+                <option value="strict">Strict (Demands exact technical terminology and completeness)</option>
+              </select>
+            </div>
+
+            <button type="submit" class="btn btn-dark px-4 py-2 fw-semibold">
+              <i class="fas fa-check me-1"></i> Save Preferences
+            </button>
+          </form>
+        </div>
+
+        <!-- TAB 4: SYSTEM INFO -->
+        <div *ngIf="activeTab === 'info'">
+          <h5 class="fw-bold mb-3 text-dark"><i class="fas fa-server text-info me-2"></i> System &amp; Security Status</h5>
+
+          <table class="table table-bordered text-sm">
+            <tbody>
+              <tr>
+                <td><strong>Authentication Method:</strong></td>
+                <td><span class="badge bg-success">JWT (JSON Web Token)</span> HS256 HMAC-SHA256 Encrypted</td>
+              </tr>
+              <tr>
+                <td><strong>Token Validity:</strong></td>
+                <td>24 Hours (Automatic Bearer Token Injection)</td>
+              </tr>
+              <tr>
+                <td><strong>Database Engine:</strong></td>
+                <td><span class="badge bg-primary">PostgreSQL</span> (Fallback SQLite Ready)</td>
+              </tr>
+              <tr>
+                <td><strong>Backend Architecture:</strong></td>
+                <td>FastAPI 0.110+ Asynchronous Web Engine</td>
+              </tr>
+              <tr>
+                <td><strong>Deep Learning Backend:</strong></td>
+                <td>PyTorch Sequential Tensors (RNN, LSTM, BiLSTM)</td>
+              </tr>
+              <tr>
+                <td><strong>Active User:</strong></td>
+                <td>{{ currentUser?.first_name || 'User' }} {{ currentUser?.last_name || '' }} (ID: {{ currentUser?.id || 1 }})</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

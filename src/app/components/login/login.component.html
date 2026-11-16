@@ -1,0 +1,61 @@
+<div class="login-page">
+  <div class="login-container">
+    <div class="login-header">
+      <i class="fas fa-user-graduate logo-icon"></i>
+      <h2>Welcome Back</h2>
+      <p class="login-subtext">Login to your account</p>
+    </div>
+
+    <div *ngIf="errorMessage" class="login-error">
+      <i class="fas fa-exclamation-circle me-1"></i> {{ errorMessage }}
+    </div>
+
+    <form (ngSubmit)="onSubmit()">
+      <div class="input-group">
+        <i class="fas fa-user"></i>
+        <input
+          type="text"
+          name="username"
+          [(ngModel)]="username"
+          required
+          placeholder="Username"
+          autofocus
+        />
+      </div>
+
+      <div class="input-group">
+        <i class="fas fa-lock"></i>
+        <input
+          [type]="showPassword ? 'text' : 'password'"
+          name="password"
+          [(ngModel)]="password"
+          required
+          placeholder="Password"
+        />
+        <i
+          class="fas"
+          [class.fa-eye]="!showPassword"
+          [class.fa-eye-slash]="showPassword"
+          (click)="togglePasswordVisibility()"
+          title="Show/Hide Password"
+          style="cursor: pointer;"
+        ></i>
+      </div>
+
+      <div class="form-options">
+        <label><input type="checkbox" name="remember" [(ngModel)]="remember" /> Remember me</label>
+      </div>
+
+      <button type="submit" [disabled]="isLoading">
+        <span *ngIf="!isLoading">Login</span>
+        <span *ngIf="isLoading"><i class="fas fa-spinner fa-spin me-2"></i> Logging in...</span>
+      </button>
+    </form>
+
+    <div class="login-footer">
+      <p><a routerLink="/forgot-password">Forgot password?</a></p>
+      <p>Don't have an account? <a routerLink="/signup">Sign up</a></p>
+      <p class="mt-2"><a routerLink="/" class="text-muted"><i class="fas fa-arrow-left me-1"></i> Back to Home</a></p>
+    </div>
+  </div>
+</div>

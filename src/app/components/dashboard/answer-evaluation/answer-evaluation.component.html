@@ -1,0 +1,164 @@
+<div class="fade-in">
+  <!-- 1. UPLOAD FORM VIEW -->
+  <div class="container" *ngIf="!result">
+    <div class="eval-card">
+      <h2 class="header-title"><i class="fas fa-balance-scale me-2"></i> Dual Answer Sheet Evaluation</h2>
+      <p class="header-sub">
+        Upload both the <strong>Correct Reference Answer Sheet</strong> and the <strong>Student Answer Sheet</strong>.
+        The AI model compares both and computes an objective score with detailed conceptual feedback.
+      </p>
+
+      <div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-circle me-2"></i>{{ error }}
+        <button type="button" class="btn-close" (click)="error = null"></button>
+      </div>
+
+      <form (ngSubmit)="onSubmit()" *ngIf="!isLoading">
+        <!-- 1. Correct / Reference Answer Sheet -->
+        <div class="upload-box" style="border-left: 6px solid #28a745;">
+          <label class="form-label text-success">
+            <i class="fas fa-check-circle me-1"></i> 1. Correct / Reference Answer Sheet
+          </label>
+          <input type="file" (change)="onRefFileSelected($event)" class="form-control mb-2" accept=".txt,.pdf">
+          <div class="form-text mb-2">Upload reference file (.pdf or .txt) OR paste reference answer key below:</div>
+          <textarea
+            name="ref_text"
+            class="form-control"
+            rows="3"
+            [(ngModel)]="refText"
+            placeholder="Optional: Paste correct reference answer text directly here..."
+          ></textarea>
+        </div>
+
+        <!-- 2. Student Answer Sheet -->
+        <div class="upload-box" style="border-left: 6px solid var(--primary-color, #800000);">
+          <label class="form-label" style="color: var(--primary-color, #800000);">
+            <i class="fas fa-user-edit me-1"></i> 2. Student Answer Sheet
+          </label>
+          <input type="file" (change)="onStudentFileSelected($event)" class="form-control mb-2" accept=".txt,.pdf">
+          <div class="form-text mb-2">Upload student answer sheet (.pdf or .txt) OR paste student response below:</div>
+          <textarea
+            name="student_text"
+            class="form-control"
+            rows="3"
+            [(ngModel)]="studentText"
+            placeholder="Optional: Paste student's written response directly here..."
+          ></textarea>
+        </div>
+
+        <button type="submit" class="btn-evaluate">
+          <i class="fas fa-calculator me-2"></i> Compare &amp; Generate Score
+        </button>
+      </form>
+
+      <!-- Loading Spinner -->
+      <div class="text-center py-5" *ngIf="isLoading">
+        <div class="spinner-border text-danger" style="width: 3.5rem; height: 3.5rem;" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <h5 class="mt-3 text-maroon fw-bold">Analyzing Answer Semantics...</h5>
+        <p class="text-muted">Computing TF-IDF cosine similarity, extracting domain noun chunks, and evaluating conceptual completeness.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. EVALUATION RESULT REPORT VIEW -->
+  <div class="result-container text-start" *ngIf="result">
+    <!-- Title & Grade Header -->
+    <div class="text-center mb-4">
+      <h2 class="fw-bold" style="color: var(--primary-color, #800000);">
+        <i class="fas fa-clipboard-check me-2"></i> Evaluation Result &amp; Score Report
+      </h2>
+      <div class="score-badge mt-2">
+        {{ result.score }} <span style="font-size: 24px; color: #64748b;">/ 10</span>
+      </div>
+      <div>
+        <span class="grade-badge bg-success text-white">
+          <i class="fas fa-award me-1"></i> {{ result.grade || 'Grade A' }} ({{ result.score_100 }}%)
+        </span>
+      </div>
+      <p class="lead text-muted mt-2">{{ result.feedback_summary }}</p>
+    </div>
+
+    <!-- Score Breakdown Cards -->
+    <div class="row g-3 mb-4">
+      <div class="col-md-4">
+        <div class="stat-card">
+          <small class="text-muted d-block text-uppercase fw-bold">Semantic Similarity</small>
+          <div class="stat-val text-primary">{{ result.similarity_pct }}%</div>
+          <small class="text-muted">TF-IDF Vector Cosine</small>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="stat-card">
+          <small class="text-muted d-block text-uppercase fw-bold">Keyword Coverage</small>
+          <div class="stat-val text-success">{{ result.coverage_pct }}%</div>
+          <small class="text-muted">Reference Domain Concepts</small>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="stat-card">
+          <small class="text-muted d-block text-uppercase fw-bold">Completeness</small>
+          <div class="stat-val text-warning">{{ result.completeness_score }}/10</div>
+          <small class="text-muted">Length &amp; Elaboration</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Concept Matching Analysis -->
+    <div class="card mb-4 border-0 shadow-sm" style="border: 1px solid var(--card-border, #e2e8f0) !important;">
+      <div class="card-body">
+        <h5 class="fw-bold text-secondary mb-3"><i class="fas fa-tags me-2"></i> Conceptual Coverage Analysis</h5>
+
+        <div class="mb-3">
+          <strong class="text-success d-block mb-1"><i class="fas fa-check-circle me-1"></i> Matched Core Concepts:</strong>
+          <div *ngIf="result.matched_concepts && result.matched_concepts.length > 0; else noMatched">
+            <span class="concept-pill concept-matched" *ngFor="let concept of result.matched_concepts">{{ concept }}</span>
+          </div>
+          <ng-template #noMatched>
+            <span class="text-muted">No exact domain concepts matched.</span>
+          </ng-template>
+        </div>
+
+        <div class="mb-3">
+          <strong class="text-danger d-block mb-1"><i class="fas fa-times-circle me-1"></i> Missing Concepts from Answer Key:</strong>
+          <div *ngIf="result.missing_concepts && result.missing_concepts.length > 0; else noMissing">
+            <span class="concept-pill concept-missing" *ngFor="let concept of result.missing_concepts">{{ concept }}</span>
+          </div>
+          <ng-template #noMissing>
+            <span class="text-success">None! All key concepts were addressed.</span>
+          </ng-template>
+        </div>
+
+        <div class="mt-3 p-3 bg-light rounded" *ngIf="result.recommendations && result.recommendations.length > 0">
+          <strong class="text-dark d-block mb-1"><i class="fas fa-lightbulb text-warning me-1"></i> Recommendations for Improvement:</strong>
+          <ul class="mb-0 ps-3">
+            <li *ngFor="let rec of result.recommendations">{{ rec }}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Side-by-Side Answers Comparison -->
+    <div class="row mb-4">
+      <div class="col-md-6 mb-3">
+        <h6 class="fw-bold text-success"><i class="fas fa-check-square me-1"></i> Correct / Reference Answer Sheet:</h6>
+        <div class="text-box">{{ result.reference_answer }}</div>
+      </div>
+      <div class="col-md-6 mb-3">
+        <h6 class="fw-bold" style="color: var(--primary-color, #800000);"><i class="fas fa-user-edit me-1"></i> Student's Answer Sheet:</h6>
+        <div class="text-box">{{ result.student_answer }}</div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="text-center no-print pt-2">
+      <button (click)="print()" class="btn btn-outline-dark me-2">
+        <i class="fas fa-print me-1"></i> Print / Save as PDF
+      </button>
+      <button (click)="resetEvaluation()" class="btn btn-maroon">
+        <i class="fas fa-redo me-1"></i> Evaluate Another Answer
+      </button>
+    </div>
+  </div>
+</div>

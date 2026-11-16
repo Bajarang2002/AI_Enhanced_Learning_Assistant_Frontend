@@ -1,0 +1,112 @@
+/* =============================================================================
+   AI-Enhanced Learning Assistant - Global Styles & Themes
+   ============================================================================= */
+
+:root {
+  --primary-color: #800000;
+  --primary-hover: #550000;
+  --sidebar-bg: #4a0000;
+  --sidebar-hover: #330000;
+  --accent-color: #f59e0b;
+  --navbar-bg: #800000;
+  --body-bg: #f8fafc;
+  --card-border: #e2e8f0;
+}
+
+[data-theme="indigo"] {
+  --primary-color: #4f46e5;
+  --primary-hover: #4338ca;
+  --sidebar-bg: #0f172a;
+  --sidebar-hover: #1e293b;
+  --accent-color: #06b6d4;
+  --navbar-bg: #0f172a;
+  --body-bg: #f1f5f9;
+  --card-border: #cbd5e1;
+}
+
+[data-theme="ocean"] {
+  --primary-color: #0284c7;
+  --primary-hover: #0369a1;
+  --sidebar-bg: #0c4a6e;
+  --sidebar-hover: #075985;
+  --accent-color: #38bdf8;
+  --navbar-bg: #0c4a6e;
+  --body-bg: #f0f9ff;
+  --card-border: #bae6fd;
+}
+
+[data-theme="minimal"] {
+  --primary-color: #10b981;
+  --primary-hover: #059669;
+  --sidebar-bg: #1e293b;
+  --sidebar-hover: #334155;
+  --accent-color: #10b981;
+  --navbar-bg: #1e293b;
+  --body-bg: #f8fafc;
+  --card-border: #e2e8f0;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+}
+
+body {
+  background-color: var(--body-bg);
+  color: #1e293b;
+  line-height: 1.6;
+  transition: background-color 0.3s ease;
+  overflow-x: hidden;
+}
+
+/* Common utility classes */
+.text-maroon {
+  color: #800000 !important;
+}
+
+.bg-maroon {
+  background-color: #800000 !important;
+  color: #fff !important;
+}
+
+.btn-maroon {
+  background-color: #800000;
+  color: white;
+  border-radius: 8px;
+  font-weight: 600;
+  border: none;
+  transition: all 0.25s ease;
+}
+
+.btn-maroon:hover {
+  background-color: #550000;
+  color: white;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease forwards;
+}
+
+/* Print Styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: white !important;
+    padding: 0 !important;
+  }
+}

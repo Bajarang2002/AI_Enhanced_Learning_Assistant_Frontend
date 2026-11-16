@@ -1,0 +1,199 @@
+<!-- Top Professional Navigation Bar -->
+<header class="landing-header" [class.scrolled]="isScrolled">
+  <div class="landing-nav-container">
+    <!-- Left: Brand Logo & Title -->
+    <div class="landing-brand">
+      <a (click)="scrollTo('home')" class="brand-link" style="cursor: pointer;">
+        <div class="brand-icon-box">
+          <i class="fas fa-graduation-cap"></i>
+        </div>
+        <span class="brand-text">AI-Enhanced Learning Assistant</span>
+      </a>
+    </div>
+
+    <!-- Right: Navigation Menu & Actions -->
+    <div class="landing-nav-right">
+      <ul class="nav-menu" [class.open]="isMobileMenuOpen">
+        <li class="nav-item">
+          <a (click)="scrollTo('home')" class="nav-link" [class.active]="activeSection === 'home'" style="cursor: pointer;">
+            <i class="fas fa-home"></i> <span>Home</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a (click)="scrollTo('about')" class="nav-link" [class.active]="activeSection === 'about'" style="cursor: pointer;">
+            <i class="fas fa-info-circle"></i> <span>About Us</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a (click)="scrollTo('contact')" class="nav-link" [class.active]="activeSection === 'contact'" style="cursor: pointer;">
+            <i class="fas fa-envelope"></i> <span>Contact</span>
+          </a>
+        </li>
+
+        <ng-container *ngIf="isLoggedIn; else guestNav">
+          <li class="nav-item">
+            <a routerLink="/dashboard" class="btn-nav-dashboard">
+              <i class="fas fa-th-large"></i> <span>Dashboard</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a (click)="logout()" class="btn-nav-logout" style="cursor: pointer;">
+              <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
+            </a>
+          </li>
+        </ng-container>
+
+        <ng-template #guestNav>
+          <li class="nav-item">
+            <a routerLink="/login" class="btn-nav-login">
+              <i class="fas fa-user"></i> <span>Login</span>
+            </a>
+          </li>
+        </ng-template>
+      </ul>
+
+      <!-- Mobile Hamburger Toggle -->
+      <button class="mobile-toggle-btn" (click)="toggleMobileMenu()" aria-label="Toggle navigation">
+        <i class="fas" [ngClass]="isMobileMenuOpen ? 'fa-times' : 'fa-bars'"></i>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Main Content -->
+<main id="home">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <i class="fas fa-brain"></i> AI &amp; NLP Educational Platform
+      </div>
+
+      <h1 class="hero-title">AI-Enhanced Learning Assistant</h1>
+
+      <p class="abstract-text">
+        Our cutting-edge system leverages AI, NLP, and Machine Learning to automate the generation of context-based questions and the evaluation of student answers. It ensures fair, accurate, and efficient assessments by analyzing semantic relevance, detecting errors, and providing detailed feedback.
+      </p>
+
+      <div class="hero-actions">
+        <a *ngIf="isLoggedIn" routerLink="/dashboard" class="btn-hero-primary">
+          <i class="fas fa-arrow-right"></i> Getting Started
+        </a>
+        <a *ngIf="!isLoggedIn" routerLink="/login" class="btn-hero-primary">
+          <i class="fas fa-arrow-right"></i> Getting Started
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Us Section -->
+  <section id="about" class="info-section">
+    <div class="info-container">
+      <div class="section-header">
+        <span class="section-tag">Overview</span>
+        <h2 class="section-title">About Us</h2>
+        <div class="section-divider"></div>
+        <p class="section-subtitle">Automated question generation and intelligent answer evaluation powered by NLP &amp; Machine Learning</p>
+      </div>
+
+      <div class="info-card">
+        <p>
+          The <strong>AI-enhanced Question Answer Generation and Evaluation System</strong> is an educational assessment method providing answer generation, evaluation, and scoring through <strong>Natural Language Processing (NLP)</strong> and <strong>Machine Learning (ML)</strong> as a core tool. This system analyzes a given text to extract pertinent questions and then grades students' answers on their semantic matching with predefined answer keys.
+        </p>
+        <p>
+          NLP methods are used for concept extraction to achieve an equitable assessment model. Learning objectives and targeted question-writing strategies are applied to generate multiple question strategies. The evaluation module uses ML models for semantic similarity, analogy-based error detection, and accuracy scoring. Feedback includes detailed explanations of student errors.
+        </p>
+        <p>
+          Major assessment components involve preprocessing, semantic analysis, score feedback, and automated scorecard creation—ensuring consistency, personalization, and scalability in evaluation.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="info-section alt-bg">
+    <div class="info-container">
+      <div class="section-header">
+        <span class="section-tag">Get In Touch</span>
+        <h2 class="section-title">Contact</h2>
+        <div class="section-divider"></div>
+        <p class="section-subtitle">Have questions or need support? Reach out to our technical team:</p>
+      </div>
+
+      <div class="info-card">
+        <ul class="contact-list">
+          <li>
+            <i class="fas fa-envelope"></i>
+            <div>
+              <strong style="display:block; font-size: 0.8rem; text-transform: uppercase; color: #64748b; letter-spacing: 0.05em; margin-bottom: 2px;">Email Support</strong>
+              <a href="mailto:ai-learning-assistant2025&#64;gmail.com">
+                ai-learning-assistant2025&#64;gmail.com</a>
+            </div>
+          </li>
+          <li>
+            <i class="fas fa-phone"></i>
+            <div>
+              <strong style="display:block; font-size: 0.8rem; text-transform: uppercase; color: #64748b; letter-spacing: 0.05em; margin-bottom: 2px;">Helpline 1</strong>
+              <a href="tel:+917218761150">+91 7218761150</a>
+            </div>
+          </li>
+          <li>
+            <i class="fas fa-phone"></i>
+            <div>
+              <strong style="display:block; font-size: 0.8rem; text-transform: uppercase; color: #64748b; letter-spacing: 0.05em; margin-bottom: 2px;">Helpline 2</strong>
+              <a href="tel:+917385311206">+91 7385311206</a>
+            </div>
+          </li>
+          <li>
+            <i class="fas fa-phone"></i>
+            <div>
+              <strong style="display:block; font-size: 0.8rem; text-transform: uppercase; color: #64748b; letter-spacing: 0.05em; margin-bottom: 2px;">Helpline 3</strong>
+              <a href="tel:+919607227223">+91 9607227223</a>
+            </div>
+          </li>
+          <li>
+            <i class="fas fa-phone"></i>
+            <div>
+              <strong style="display:block; font-size: 0.8rem; text-transform: uppercase; color: #64748b; letter-spacing: 0.05em; margin-bottom: 2px;">Helpline 4</strong>
+              <a href="tel:+917038225434">+91 7038225434</a>
+            </div>
+          </li>
+          <li>
+            <i class="fas fa-phone"></i>
+            <div>
+              <strong style="display:block; font-size: 0.8rem; text-transform: uppercase; color: #64748b; letter-spacing: 0.05em; margin-bottom: 2px;">Helpline 5</strong>
+              <a href="tel:+917385291039">+91 7385291039</a>
+            </div>
+          </li>
+          <li style="grid-column: 1 / -1;">
+            <i class="fas fa-map-marker-alt"></i>
+            <div>
+              <strong style="display:block; font-size: 0.8rem; text-transform: uppercase; color: #64748b; letter-spacing: 0.05em; margin-bottom: 2px;">Campus Location</strong>
+              <span>DYPSN, Kolhapur 416007, Maharashtra, India</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- Professional Footer -->
+<footer class="home-footer">
+  <div class="footer-container">
+    <div class="footer-brand">
+      <i class="fas fa-graduation-cap"></i> AI-Enhanced Learning Assistant
+    </div>
+    <p class="footer-text">
+      Intelligent assessment and automated answer evaluation powered by Natural Language Processing &amp; Machine Learning.
+    </p>
+    <div class="footer-bottom">
+      &copy; 2026 AI-Enhanced Learning Assistant. All rights reserved.
+    </div>
+  </div>
+</footer>
+
+<!-- Back to Top Button -->
+<button *ngIf="showBackToTop" (click)="scrollToTop()" id="backToTop" title="Back to Top">
+  <i class="fas fa-chevron-up"></i>
+</button>

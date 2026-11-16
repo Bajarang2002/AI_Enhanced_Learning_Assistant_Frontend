@@ -1,0 +1,70 @@
+<div class="fade-in">
+  <div class="profile-card">
+    <h2><i class="fas fa-user-edit me-2"></i> Update Profile</h2>
+
+    <div *ngIf="message" class="alert alert-success text-center py-2">
+      <i class="fas fa-check-circle me-1"></i> {{ message }}
+    </div>
+    <div *ngIf="errorMessage" class="alert alert-danger text-center py-2">
+      <i class="fas fa-exclamation-circle me-1"></i> {{ errorMessage }}
+    </div>
+
+    <form (ngSubmit)="onSubmit()" class="text-start">
+      <div class="form-group text-center mb-4">
+        <div class="profile-preview-box">
+          <ng-container *ngIf="isCustomAvatar() || previewUrl; else defaultPlaceholder">
+            <img [src]="getAvatarUrl()" alt="Profile Photo" class="profile-preview-img" />
+            <span class="badge bg-success px-2 py-1 mb-2" style="font-size: 11px;">
+              <i class="fas fa-check me-1"></i> Custom Photo Set
+            </span>
+            <div>
+              <button type="button" class="btn btn-sm btn-outline-danger mt-1 mb-2" (click)="deleteProfilePhoto()">
+                <i class="fas fa-trash-alt me-1"></i> Delete Profile Photo
+              </button>
+            </div>
+          </ng-container>
+
+          <ng-template #defaultPlaceholder>
+            <div class="profile-logo-placeholder">
+              <i class="fas fa-user-circle fa-4x text-secondary"></i>
+            </div>
+            <span class="badge bg-secondary px-2 py-1 mb-2" style="font-size: 11px;">
+              <i class="fas fa-user me-1"></i> Default Avatar
+            </span>
+          </ng-template>
+        </div>
+
+        <label for="profile_image_file" class="d-block mb-1 fw-bold">Upload New Profile Photo:</label>
+        <input
+          type="file"
+          class="form-control mx-auto"
+          style="max-width: 280px;"
+          id="profile_image_file"
+          accept="image/*"
+          (change)="onFileSelected($event)"
+        />
+        <small class="form-text text-muted mt-1 d-block">Upload a JPG or PNG photo to set it as your profile picture.</small>
+      </div>
+
+      <div class="mb-3">
+        <label for="first_name" class="form-label fw-bold">First Name:</label>
+        <input type="text" class="form-control" name="first_name" id="first_name" [(ngModel)]="firstName" required />
+      </div>
+
+      <div class="mb-3">
+        <label for="last_name" class="form-label fw-bold">Last Name:</label>
+        <input type="text" class="form-control" name="last_name" id="last_name" [(ngModel)]="lastName" required />
+      </div>
+
+      <div class="mb-4">
+        <label for="email" class="form-label fw-bold">Email Address:</label>
+        <input type="email" class="form-control" name="email" id="email" [(ngModel)]="email" required />
+      </div>
+
+      <button type="submit" class="btn btn-custom w-100" [disabled]="isLoading">
+        <span *ngIf="!isLoading"><i class="fas fa-save me-1"></i> Save Changes</span>
+        <span *ngIf="isLoading"><i class="fas fa-spinner fa-spin me-1"></i> Saving Profile...</span>
+      </button>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,234 @@
+<!-- Top Navigation Bar -->
+<nav class="dashboard-navbar">
+  <div class="brand-group">
+    <div class="brand-icon">
+      <i class="fas fa-graduation-cap"></i>
+    </div>
+    <div>
+      <h1 class="navbar-title">AI Learning Assistant</h1>
+    </div>
+  </div>
+
+  <!-- Center/Right Action Controls -->
+  <div class="d-flex align-items-center gap-2 gap-md-3">
+    <!-- JWT Active Badge -->
+    <span class="status-badge text-white d-none d-sm-inline-flex" style="background: rgba(255, 255, 255, 0.15); border-color: rgba(255, 255, 255, 0.25);">
+      <i class="fas fa-lock text-warning"></i> JWT Active (HS256)
+    </span>
+
+    <!-- User Profile Dropdown Menu -->
+    <div class="dropdown ps-2 border-start border-white-50 position-relative">
+      <button
+        class="btn btn-link text-white text-decoration-none d-flex align-items-center gap-2 p-1"
+        type="button"
+        (click)="toggleDropdown()"
+        style="box-shadow: none;"
+      >
+        <div class="d-flex align-items-center gap-2">
+          <ng-container *ngIf="isCustomAvatar(); else defaultIcon">
+            <img
+              [src]="getAvatarUrl()"
+              alt="Profile Photo"
+              class="rounded-circle border border-white"
+              width="36"
+              height="36"
+              style="object-fit: cover;"
+            />
+          </ng-container>
+          <ng-template #defaultIcon>
+            <div
+              class="rounded-circle border border-white d-flex align-items-center justify-content-center text-white"
+              style="width: 36px; height: 36px; background: rgba(255, 255, 255, 0.25);"
+              title="Profile"
+            >
+              <i class="fas fa-user-circle fa-lg"></i>
+            </div>
+          </ng-template>
+          <span class="text-sm fw-bold d-none d-md-inline text-white">
+            {{ currentUser?.first_name || 'User' }}
+          </span>
+          <i class="fas fa-chevron-down text-white-50 ms-1" style="font-size: 11px;"></i>
+        </div>
+      </button>
+
+      <ul
+        class="dropdown-menu dropdown-menu-end shadow-lg py-2 mt-2"
+        [class.show]="isDropdownOpen"
+        style="min-width: 230px; border-radius: 12px; border: 1px solid rgba(0,0,0,0.08); position: absolute; right: 0; left: auto;"
+      >
+        <li class="px-3 py-2 border-bottom">
+          <div class="fw-bold text-dark text-truncate">{{ currentUser?.first_name }} {{ currentUser?.last_name }}</div>
+          <div class="text-muted text-xs text-truncate">&#64;{{ currentUser?.username || 'user' }}</div>
+          <div class="text-muted text-xs text-truncate">{{ currentUser?.email }}</div>
+        </li>
+        <li>
+          <a class="dropdown-item py-2 text-sm" href="javascript:void(0)" (click)="setView('profile')">
+            <i class="fas fa-user-edit text-primary me-2"></i> Update Profile
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item py-2 text-sm" href="javascript:void(0)" (click)="setView('settings')">
+            <i class="fas fa-sliders-h text-secondary me-2"></i> Settings &amp; Password
+          </a>
+        </li>
+        <li><hr class="dropdown-divider my-1"></li>
+        <li>
+          <a class="dropdown-item py-2 text-sm text-danger fw-semibold" href="javascript:void(0)" (click)="signOut()">
+            <i class="fas fa-sign-out-alt me-2"></i> Sign Out
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Left Sidebar -->
+<aside class="dashboard-sidebar">
+  <ul class="sidebar-menu">
+    <li>
+      <a href="javascript:void(0)" (click)="setView('home')" [class.active]="activeView === 'home'">
+        <i class="fas fa-home"></i> <span>Dashboard Home</span>
+      </a>
+    </li>
+    <li>
+      <a href="javascript:void(0)" (click)="setView('train')" [class.active]="activeView === 'train'">
+        <i class="fas fa-brain"></i> <span>Train RNN/LSTM</span>
+      </a>
+    </li>
+    <li>
+      <a href="javascript:void(0)" (click)="setView('accuracy')" [class.active]="activeView === 'accuracy'">
+        <i class="fas fa-chart-line"></i> <span>Model Accuracy</span>
+      </a>
+    </li>
+    <li>
+      <a href="javascript:void(0)" (click)="setView('questions')" [class.active]="activeView === 'questions'">
+        <i class="fas fa-question-circle"></i> <span>Generate Questions</span>
+      </a>
+    </li>
+    <li>
+      <a href="javascript:void(0)" (click)="setView('evaluation')" [class.active]="activeView === 'evaluation'">
+        <i class="fas fa-balance-scale"></i> <span>Answer Evaluation</span>
+      </a>
+    </li>
+    <li>
+      <a href="javascript:void(0)" (click)="setView('settings')" [class.active]="activeView === 'settings'">
+        <i class="fas fa-sliders-h"></i> <span>Settings &amp; Password</span>
+      </a>
+    </li>
+    <li>
+      <a href="javascript:void(0)" (click)="setView('profile')" [class.active]="activeView === 'profile'">
+        <i class="fas fa-user-edit"></i> <span>Update Profile</span>
+      </a>
+    </li>
+  </ul>
+</aside>
+
+<!-- Main Viewport -->
+<main class="dashboard-main">
+  <!-- 1. HOME WELCOME VIEW -->
+  <div class="welcome-card fade-in" *ngIf="activeView === 'home'">
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2 text-start">
+      <div>
+        <h2 class="fw-bold mb-1" style="color: var(--primary-color, #800000);">
+          Welcome, {{ currentUser?.first_name || 'Student' }}!
+        </h2>
+        <p class="text-muted text-sm mb-0">Your deep learning workspace is active and secured with JWT session authentication.</p>
+      </div>
+      <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1.5 text-xs fw-bold">
+        <i class="fas fa-check-circle me-1"></i> System Online
+      </span>
+    </div>
+
+    <hr class="my-4 text-muted opacity-25">
+
+    <!-- 4 Quick-Action Feature Tiles -->
+    <div class="row g-3 g-xl-4 text-start">
+      <div class="col-12 col-sm-6 col-xl-3">
+        <div class="feature-tile" (click)="setView('train')">
+          <div>
+            <div class="tile-icon-box">
+              <i class="fas fa-brain"></i>
+            </div>
+            <h5 class="fw-bold text-base mb-1">1. Train Model</h5>
+            <p class="text-muted text-xs mb-0">Upload training files and train PyTorch LSTM / RNN / BiLSTM networks.</p>
+          </div>
+          <span class="text-xs fw-bold mt-4" style="color: var(--primary-color, #800000);">Open Trainer &rarr;</span>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-xl-3">
+        <div class="feature-tile" (click)="setView('accuracy')">
+          <div>
+            <div class="tile-icon-box" style="background: rgba(16,185,129,0.1); color: #10b981;">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <h5 class="fw-bold text-base mb-1">2. Model Accuracy</h5>
+            <p class="text-muted text-xs mb-0">Review training loss convergence curves and performance records.</p>
+          </div>
+          <span class="text-xs fw-bold mt-4 text-success">View Metrics &rarr;</span>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-xl-3">
+        <div class="feature-tile" (click)="setView('questions')">
+          <div>
+            <div class="tile-icon-box" style="background: rgba(245,158,11,0.1); color: #f59e0b;">
+              <i class="fas fa-question-circle"></i>
+            </div>
+            <h5 class="fw-bold text-base mb-1">3. Generate Q&amp;A</h5>
+            <p class="text-muted text-xs mb-0">Synthesize government-exam MCQs and comprehensive detailed solutions.</p>
+          </div>
+          <span class="text-xs fw-bold mt-4 text-warning">Generate Now &rarr;</span>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-xl-3">
+        <div class="feature-tile" (click)="setView('evaluation')">
+          <div>
+            <div class="tile-icon-box" style="background: rgba(59,130,246,0.1); color: #3b82f6;">
+              <i class="fas fa-balance-scale"></i>
+            </div>
+            <h5 class="fw-bold text-base mb-1">4. Answer Evaluation</h5>
+            <p class="text-muted text-xs mb-0">Upload Reference Answer Key and Student Sheet to compare and score.</p>
+          </div>
+          <span class="text-xs fw-bold mt-4 text-primary">Evaluate Sheet &rarr;</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. TRAIN VIEW -->
+  <app-upload-train
+    *ngIf="activeView === 'train'"
+    (viewMetricsRequested)="setView('accuracy')"
+  ></app-upload-train>
+
+  <!-- 3. ACCURACY VIEW -->
+  <app-model-accuracy
+    *ngIf="activeView === 'accuracy'"
+    (trainNewRequested)="setView('train')"
+    (generateQRequested)="setView('questions')"
+  ></app-model-accuracy>
+
+  <!-- 4. QUESTIONS VIEW -->
+  <app-question-generation
+    *ngIf="activeView === 'questions'"
+    (backToDashboard)="setView('home')"
+    (viewAccuracyRequested)="setView('accuracy')"
+  ></app-question-generation>
+
+  <!-- 5. EVALUATION VIEW -->
+  <app-answer-evaluation
+    *ngIf="activeView === 'evaluation'"
+  ></app-answer-evaluation>
+
+  <!-- 6. SETTINGS VIEW -->
+  <app-settings
+    *ngIf="activeView === 'settings'"
+  ></app-settings>
+
+  <!-- 7. PROFILE VIEW -->
+  <app-update-profile
+    *ngIf="activeView === 'profile'"
+  ></app-update-profile>
+</main>
